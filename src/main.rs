@@ -23,5 +23,7 @@ async fn main() -> Result<()> {
     })
     .await;
 
+    tracing::info!("Finished scraping menu");
+
     Ok(())
 }

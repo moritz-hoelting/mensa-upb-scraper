@@ -33,7 +33,8 @@ pub async fn add_meal_to_db(db: &PgPool, canteen: Canteen, dish: &Dish) -> Resul
 
     sqlx::query!(
         "INSERT INTO meals (date,canteen,name,dish_type,image_src,price_students,price_employees,price_guests,vegan,vegetarian)
-        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+        ON CONFLICT (date,canteen,name) DO NOTHING",
         today, canteen.get_identifier(), dish.get_name(), 
         dish.get_type().to_string(), dish.get_image_src(),
         price_to_bigdecimal(dish.get_price_students()),

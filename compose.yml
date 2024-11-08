@@ -1,0 +1,21 @@
+services:
+    stats:
+        build: .
+        image: mensa-upb-stats:latest
+        environment:
+            - DATABASE_URL=postgres://pguser:pgpass@postgres-mensa-upb-stats/postgres
+            - "RUST_LOG=none,mensa_upb_stats=info"
+            - TZ=Europe/Berlin
+
+    postgres:
+        container_name: postgres-mensa-upb-stats
+        image: postgres:17-alpine
+        environment:
+            - POSTGRES_USER=pguser
+            - POSTGRES_PASSWORD=pgpass
+            - POSTGRES_DB=postgres
+        volumes:
+            - db:/var/lib/postgresql/data
+
+volumes:
+    db:
