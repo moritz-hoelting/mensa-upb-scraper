@@ -3,7 +3,10 @@ use chrono::Utc;
 
 use crate::{dish::DishType, Canteen, CustomError, Dish};
 
+#[tracing::instrument(skip_all)]
 pub async fn scrape_menu(canteen: Canteen) -> Result<Vec<Dish>> {
+    tracing::debug!("Scraping {} canteen", canteen.get_identifier());
+
     let url = canteen.get_url();
     let client = reqwest::Client::new();
     let request_builder = client.post(url).query(&[(

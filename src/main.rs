@@ -8,7 +8,11 @@ async fn main() -> Result<()> {
 
     let db = util::get_db()?;
 
+    tracing_subscriber::fmt::init();
+
     sqlx::migrate!().run(&db).await?;
+
+    tracing::info!("Starting to scrape menu");
 
     let canteens = Canteen::iter().collect::<Vec<_>>();
     util::async_for_each(&canteens, |(canteen, menu)| {

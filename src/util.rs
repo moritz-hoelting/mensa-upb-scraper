@@ -25,6 +25,7 @@ pub fn get_db() -> Result<PgPool> {
         .connect_lazy(&env::var("DATABASE_URL").expect("missing DATABASE_URL env variable"))?)
 }
 
+#[tracing::instrument(skip(db))]
 pub async fn add_meal_to_db(db: &PgPool, canteen: Canteen, dish: &Dish) -> Result<()> {
     let today = Utc::now().date_naive();
 
@@ -39,7 +40,12 @@ pub async fn add_meal_to_db(db: &PgPool, canteen: Canteen, dish: &Dish) -> Resul
         price_to_bigdecimal(dish.get_price_employees()),
         price_to_bigdecimal(dish.get_price_guests()),
         vegan, vegan || dish.is_vegetarian()
-    ).execute(db).await?;
+    ).execute(db).await.map_err(|e| {
+        tracing::error!("error during database insert: {}", e);
+        e
+    })?;
+
+    tracing::trace!("Insert to DB successfull");
 
     Ok(())
 }

@@ -16,3 +16,5 @@ scraper = "0.21.0"
 sqlx = { version = "0.8.2", features = ["runtime-tokio-rustls", "postgres", "migrate", "chrono", "uuid", "bigdecimal"] }
 strum = { version = "0.26.3", features = ["derive"] }
 tokio = { version = "1.41.1", features = ["macros", "rt-multi-thread"] }
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["fmt", "std", "env-filter", "registry", "json", "tracing-log"] }
