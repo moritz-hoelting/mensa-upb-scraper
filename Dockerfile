@@ -18,7 +18,7 @@ WORKDIR /app
 RUN apt-get update -y && \
     apt-get install -y ca-certificates cron
 
-RUN echo "0 8 * * * /app/mensa-upb-stats >> /var/log/cron.log 2>&1" > /etc/cron.d/mensa_upb_stats
+RUN echo "0 0 * * * /app/mensa-upb-stats >> /var/log/cron.log 2>&1" > /etc/cron.d/mensa_upb_stats
 RUN chmod 0644 /etc/cron.d/mensa_upb_stats
 RUN crontab /etc/cron.d/mensa_upb_stats
 RUN touch /var/log/cron.log

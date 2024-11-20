@@ -1,17 +1,17 @@
 use anyhow::Result;
-use chrono::Utc;
+use chrono::NaiveDate;
 
 use crate::{dish::DishType, Canteen, CustomError, Dish};
 
-#[tracing::instrument(skip_all)]
-pub async fn scrape_menu(canteen: Canteen) -> Result<Vec<Dish>> {
-    tracing::debug!("Scraping {} canteen", canteen.get_identifier());
+#[tracing::instrument]
+pub async fn scrape_menu(date: &NaiveDate, canteen: Canteen) -> Result<Vec<Dish>> {
+    tracing::debug!("Starting scraping");
 
     let url = canteen.get_url();
     let client = reqwest::Client::new();
     let request_builder = client.post(url).query(&[(
         "tx_pamensa_mensa[date]",
-        Utc::now().format("%Y-%m-%d").to_string(),
+        date.format("%Y-%m-%d").to_string(),
     )]);
     let response = request_builder.send().await?;
     let html_content = response.text().await?;
@@ -49,6 +49,8 @@ pub async fn scrape_menu(canteen: Canteen) -> Result<Vec<Dish>> {
     res.extend(main_dishes);
     res.extend(side_dishes);
     res.extend(desserts);
+
+    tracing::debug!("Finished scraping");
 
     Ok(res)
 }
