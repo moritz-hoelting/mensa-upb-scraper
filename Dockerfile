@@ -18,11 +18,11 @@ WORKDIR /app
 RUN apt-get update -y && \
     apt-get install -y ca-certificates cron
 
-RUN echo "0 0 * * * /app/mensa-upb-stats >> /var/log/cron.log 2>&1" > /etc/cron.d/mensa_upb_stats
-RUN chmod 0644 /etc/cron.d/mensa_upb_stats
-RUN crontab /etc/cron.d/mensa_upb_stats
+RUN echo "0 0 * * * /app/mensa-upb-scraper >> /var/log/cron.log 2>&1" > /etc/cron.d/mensa_upb_scraper
+RUN chmod 0644 /etc/cron.d/mensa_upb_scraper
+RUN crontab /etc/cron.d/mensa_upb_scraper
 RUN touch /var/log/cron.log
 
-COPY --from=builder /app/target/release/mensa-upb-stats /app/mensa-upb-stats
+COPY --from=builder /app/target/release/mensa-upb-scraper /app/mensa-upb-scraper
 
 CMD env > /etc/environment && cron && tail -f /var/log/cron.log
